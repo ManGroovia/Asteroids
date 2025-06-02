@@ -5,13 +5,13 @@ from player import Player
 from asteroid import Asteroid
 from asteroidfield import AsteroidField
 from shot import Shot
-
+from explosion import Explosion 
 
 def main():
     pygame.init()
-
+    
     # ЗВУК
-
+    
 
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     clock = pygame.time.Clock()
@@ -20,12 +20,14 @@ def main():
     drawable = pygame.sprite.Group()
     asteroids = pygame.sprite.Group()
     shots = pygame.sprite.Group()
+    explosions = pygame.sprite.Group()
+
 
     Asteroid.containers = (asteroids, updatable, drawable)
     Shot.containers = (shots, updatable, drawable)
     AsteroidField.containers = updatable
     asteroid_field = AsteroidField()
-
+    Explosion.containers = (explosions, updatable, drawable)
     Player.containers = (updatable, drawable)
 
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
@@ -60,6 +62,7 @@ def main():
                 lives -= 1
                 is_alive = False
                 respawn_timer = 2
+                
                 player.kill()
 
                 if lives <= 0 :
@@ -69,6 +72,7 @@ def main():
 
             for shot in shots:
                 if asteroid.collides_with(shot):
+                    Explosion(asteroid.position.x, asteroid.position.y)
                     shot.kill()
                     asteroid.split()
                     score +=100
